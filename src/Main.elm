@@ -8,6 +8,8 @@ import Html.Attributes as HA
 import Html.Attributes.Aria as HAA
 import Html.Events as HE
 import Http
+import RemoteData exposing (RemoteData)
+import Utils
 
 
 main : Program () Model Msg
