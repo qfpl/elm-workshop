@@ -17,7 +17,7 @@ If things compile, you have a very low chance of your code crashing modulo a few
 You'll need a few things before you can start:
 
 - Checkout this code to your machine:
-  - `git clone https://github.com/benkolera/elm-workshop.git`
+  - `git clone --recurse-submodules https://github.com/benkolera/elm-workshop.git`
 - Install nodejs and npm
   - https://nodejs.org/en/download/package-manager/
   - Have npm setup to install global things into ~ https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
