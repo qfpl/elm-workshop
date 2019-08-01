@@ -146,7 +146,7 @@ Lets hook into Form HE.onSubmit to make the backend call when the user presses e
 - Hook HE.onSubmit on the form element to the LoginSubmit Msg.
 - On the update function, add the Submit handler which fires off to the backend..  
 - Replace the command in the initialiser with Cmd.none
-- Put the call to BE.postApiPlayer into the cmd of the LoginSubmit handler.
+- Put the call to BE.postApiLogin into the cmd of the LoginSubmit handler.
 - Write some new view that displays the loginError if the Maybe has a value (Pattern matching is fine or you can use Utils.maybe).
 
 This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg HandleLoginResp.
