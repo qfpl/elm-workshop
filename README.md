@@ -132,7 +132,7 @@ Lets wire the form up to some model state.
 - Add a loginPlayerId : String and loginPassword : String to the model record. 
 - Don't forget to initialise these to empty string in the init function.
 - Add a SetLoginPlayerId and SetLoginPassword to the Msg sum type
-- Hook up HE.onClick to the new msgs
+- Hook up HE.onInput to the new msgs
 - Hook up HA.value to the model.loginPlayerId and model.loginPassword
 - Implement each new case branch in the update function to set the playerId / password to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
 
@@ -344,9 +344,9 @@ You can use this with `List.map chatLineView model.chatLines` to get a list of c
 
 Ideally at this point you can submit a chat line and have it pop up up to 2 seconds later. If you open up two browser windows you can even chat to yourself if you'd like. ;)
 
-## Exercise 5: Refactor & Routing
-
-## Exercise 6: New Game / Join Game
+## Exercise 5: New Game / Join Game
+ 
+## Exercise 6: Refactor & Routing
 
 ## Game State 
 
