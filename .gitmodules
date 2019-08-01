@@ -1,0 +1,3 @@
+[submodule "dissidence"]
+	path = dissidence
+	url = https://github.com/benkolera/dissidence.git
