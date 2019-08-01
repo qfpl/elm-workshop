@@ -9,6 +9,8 @@ import Html.Attributes.Aria as HAA
 import Html.Events as HE
 import Http
 import RemoteData exposing (RemoteData)
+import Session
+import Time
 import Utils
 
 
@@ -18,24 +20,30 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
 
 
 type Msg
-    = HandleLoginResp (Result Http.Error String)
+    = HandleLoginResp BE.PlayerId (Result Http.Error String)
     | SetLoginPlayerId String
     | SetLoginPassword String
     | SubmitLogin
-    | HandleRegisterResp (Result Http.Error String)
+    | HandleRegisterResp BE.PlayerId (Result Http.Error String)
     | SetRegisterPlayerId String
     | SetRegisterPassword String
     | SetRegisterPasswordAgain String
     | SubmitRegister
+    | Tick Session.Player Time.Posix
+    | HandleGetChatResp Session.Player (Result Http.Error (List BE.ChatLine))
+    | SetNewChatLine String
+    | SubmitNewChatLine Session.Player
+    | HandleNewChatLineResp (Result Http.Error ())
 
 
 type alias Model =
-    { loginToken : RemoteData String String
+    { player : Maybe Session.Player
+    , loginToken : RemoteData String String
     , loginPlayerId : String
     , loginPassword : String
     , registerToken : RemoteData String String
@@ -43,12 +51,15 @@ type alias Model =
     , registerPlayerId : String
     , registerPassword : String
     , registerPasswordAgain : String
+    , chatLines : List BE.ChatLine
+    , newChatLine : String
     }
 
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
-    ( { loginToken = RemoteData.NotAsked
+    ( { player = Nothing
+      , loginToken = RemoteData.NotAsked
       , loginPlayerId = ""
       , loginPassword = ""
       , registerToken = RemoteData.NotAsked
@@ -56,6 +67,8 @@ init _ =
       , registerPlayerId = ""
       , registerPassword = ""
       , registerPasswordAgain = ""
+      , chatLines = []
+      , newChatLine = ""
       }
     , Cmd.none
     )
@@ -64,8 +77,11 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
-        HandleLoginResp r ->
-            ( { model | loginToken = RemoteData.fromResult r |> RemoteData.mapError Utils.httpErrorToStr }
+        HandleLoginResp playerId r ->
+            ( { model
+                | loginToken = RemoteData.fromResult r |> RemoteData.mapError Utils.httpErrorToStr
+                , player = Result.toMaybe r |> Maybe.map (Session.Player playerId)
+              }
             , Cmd.none
             )
 
@@ -77,11 +93,14 @@ update action model =
 
         SubmitLogin ->
             ( { model | loginToken = RemoteData.Loading }
-            , BE.postApiLogin (BE.DbPlayer model.loginPlayerId model.loginPassword) HandleLoginResp
+            , BE.postApiLogin (BE.DbPlayer model.loginPlayerId model.loginPassword) (HandleLoginResp model.loginPlayerId)
             )
 
-        HandleRegisterResp r ->
-            ( { model | registerToken = RemoteData.fromResult r |> RemoteData.mapError Utils.httpErrorToStr }
+        HandleRegisterResp playerId r ->
+            ( { model
+                | registerToken = RemoteData.fromResult r |> RemoteData.mapError Utils.httpErrorToStr
+                , player = Result.toMaybe r |> Maybe.map (Session.Player playerId)
+              }
             , Cmd.none
             )
 
@@ -98,7 +117,7 @@ update action model =
             case validateRegisterDbPlayer model of
                 Ok dbPlayer ->
                     ( { model | registerValidationIssues = [], registerToken = RemoteData.Loading }
-                    , BE.postApiPlayers dbPlayer HandleRegisterResp
+                    , BE.postApiPlayers dbPlayer (HandleRegisterResp dbPlayer.dbPlayerId)
                     )
 
                 Err problems ->
@@ -109,9 +128,84 @@ update action model =
                     , Cmd.none
                     )
 
+        Tick player _ ->
+            ( model, BE.getApiLobby player.token Nothing (HandleGetChatResp player) )
+
+        HandleGetChatResp player chatLines ->
+            ( { model | chatLines = Result.withDefault [] chatLines }, Cmd.none )
+
+        SetNewChatLine s ->
+            ( { model | newChatLine = s }, Cmd.none )
+
+        SubmitNewChatLine player ->
+            ( model, BE.postApiLobby player.token model.newChatLine HandleNewChatLineResp )
+
+        HandleNewChatLineResp r ->
+            ( { model | newChatLine = "" }, Cmd.none )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.player of
+        Nothing ->
+            Sub.none
+
+        Just p ->
+            Time.every 2000 (Tick p)
+
 
 view : Model -> H.Html Msg
 view model =
+    case model.player of
+        Nothing ->
+            loggedOutView model
+
+        Just p ->
+            loggedInView p model
+
+
+loggedInView : Session.Player -> Model -> H.Html Msg
+loggedInView player model =
+    H.div [ HA.class "lobby" ]
+        [ H.div [ HA.class "lobby-games" ]
+            [ H.h1 [] [ H.text "Lobby" ]
+            ]
+        , H.div [ HA.class "chatbox-container" ]
+            [ H.h2 [] [ H.text "Chat Lobby" ]
+            , H.div [ HA.id "chatbox", HA.class "chatbox" ] (List.map chatLineView model.chatLines)
+            , H.form [ HE.onSubmit (SubmitNewChatLine player) ]
+                [ H.ul []
+                    [ H.li [ HA.class "chat-message" ]
+                        [ H.input
+                            [ HA.placeholder "type a chat message"
+                            , HE.onInput SetNewChatLine
+                            , HA.value model.newChatLine
+                            , HA.class "chat-message-input"
+                            , HAA.ariaLabel "Enter Chat Message"
+                            ]
+                            []
+                        ]
+                    , H.li []
+                        [ H.button
+                            [ HA.class "btn primary" ]
+                            [ H.text "send" ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+chatLineView : BE.ChatLine -> H.Html Msg
+chatLineView cl =
+    H.p []
+        [ H.b [] [ H.text cl.chatLinePlayerId, H.text "> " ]
+        , H.text cl.chatLineText
+        ]
+
+
+loggedOutView : Model -> H.Html Msg
+loggedOutView model =
     H.div []
         [ H.div [ HA.class "login-box" ]
             [ H.h1 [] [ H.text "Login" ]

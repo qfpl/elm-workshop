@@ -9,6 +9,7 @@ import Html.Attributes.Aria as HAA
 import Html.Events as HE
 import Http
 import RemoteData exposing (RemoteData)
+import Session
 import Utils
 
 
@@ -18,7 +19,7 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
 
 
@@ -49,6 +50,11 @@ update action model =
 
         HandleLoginResp (Err err) ->
             ( { model | backendError = Just "Backend login failed", backendOK = False }, Cmd.none )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
 
 
 view : Model -> H.Html Msg

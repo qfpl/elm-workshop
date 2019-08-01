@@ -87,6 +87,10 @@ The page should live reload as you make changes and you should even see compile 
 
 We're going to do things in a simple single-file fashion first then refactor later once the basics are down.
 
+Follow the types. Have a look at what type the backend call needs and then figure out the UI bits that you need to get that together. 
+
+When you need to debug something, using `Debug.log "label for log" value` will console.log that value to the console when the code is run. Handy if something is doing something unexpected. You can use that anywhere.
+
 ## Exercise 1: Login Form
 
 The first thing that we are going to do is make the login form and have that submitting to the backend. 
@@ -146,6 +150,8 @@ Lets hook into Form HE.onSubmit to make the backend call when the user presses e
 - Write some new view that displays the loginError if the Maybe has a value (Pattern matching is fine or you can use Utils.maybe).
 
 This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg HandleLoginResp.
+
+playerId / password that are already in the database ready for testing are user1 .. user5 with the password "pass".
 
 ## Exercise 2: Register Form
 
@@ -234,15 +240,117 @@ At this point you should be comfy with how we can track our remote data and how 
 
 A big part of our app is having a chat where all the players can negotiate and bluff their way to victory. This exercise will be creating the chat widget for the lobby where players can chat before joining a game. This will get us doing some views over lists of things and also have us calling the backend periodically.
 
-To submit a chat entry, we're going to need a user token, so we'll have to put that somewhere nice.
+To submit a chat entry, we're going to need a user token, so we'll have to put that somewhere nice. It feels pretty clunky at the moment whacking everything into the one Model/Message/View, but we'll stick with this for one more exercise before we introduce an abstraction that may make things harder.
 
-## Exercise 5: Refactor
+### A global Session
+
+The string that the login / register backend calls return is actually a base64 encoded JWT. We're going to need to store that in a central place alongside the actual player id so that we can display that to the user. 
+
+The Session.Player type is meant for this. It also has a json decoder / encoder pair so that we can store the session into local storage if we want to persist the login across page reloads.
+
+In the model, lets make a player : Maybe Session.Player key. It's pretty dodgy, but in our Handle{Login/Register}Resp we can just cram in the token from there over whatever maybe we already have. RemoteData.toMaybe is your friend here!
+
+Rename the current view function to loggedOutView and start with this new view code:
+
+```elm
+view : Model -> H.Html Msg
+view model =
+    case model.player of
+        Nothing ->
+            loggedOutView model
+
+        Just p ->
+            loggedInView p model
+
+
+loggedInView : Session.Player -> Model -> H.Html Msg
+loggedInView player model =
+    -- This is just some boilerplate markup
+    H.div [ HA.class "lobby" ]
+        [ H.div [ HA.class "lobby-games" ]
+            [ H.h1 [] [ H.text "Lobby" ]
+            ]
+        , H.div [ HA.class "chatbox-container" ]
+            [ H.h2 [] [ H.text "Chat Lobby" ]
+            , H.div [ HA.id "chatbox", HA.class "chatbox" ] []
+            , H.form [ ]
+                [ H.ul []
+                    [ H.li [ HA.class "chat-message" ]
+                        [ H.input
+                            [ HA.placeholder "type a chat message"
+                            , HA.class "chat-message-input"
+                            , HAA.ariaLabel "Enter Chat Message"
+                            ]
+                            []
+                        ]
+                    , H.li []
+                        [ H.button
+                            [ HA.class "btn primary" ]
+                            [ H.text "send" ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+loggedOutView : Model -> H.Html Msg
+loggedOutView model = ...
+```
+
+Once you get the handle responses setting the player, then you should see the page switch over once login has happened. Now we can build our chat ui! :)
+
+### Hooking up the form
+
+The elements of the form to have a user enter their chat message are all there. You need to get chat line to 
+
+```elm
+postApiLobby : Token -> String -> (Result Http.Error  (())  -> msg) -> Cmd msg
+```
+
+Do the dance of hooking up the input to set the string into the model, an on submit and then making the backend call.
+
+Hopefully that doesn't bug you too much, but there is some really annoying bits where we need the player session. It should be starting to get painfully obvious that we need a better structure. :)
+
+### Getting the Chat Lines
+
+Now we need to plug in to our ability to subscribe to things from the outside world based on some state in our model. These subscriptions are recalculated every time the model is changed.
+
+If we are logged in, we want to look for new chat lines every two seconds. That looks a little like this:
+
+```elm
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.player of
+        Nothing ->
+            Sub.none
+
+        Just p ->
+            Time.every 2000 (Tick p)
+```
+
+You can't do effects in your subscription. The subscription only gives your app back a msg and you have to do you effects in the update function as per always. Elm strictly keeps your side effects to init and update.
+
+Please create the Tick constructor, a handler in update for it that calls BE.getApiLobby with the token in the session and Nothing for the time stamp (we'll deal with that later).
+
+Now you need to write the view to draw the chat lines out. 
+
+Note that the child elements of an element are just a (List H.Html Msg), so if you write this function:
+```elm
+chatLineView : BE.ChatLine -> H.Html Msg
+chatLineView cl = H.text "implement me" 
+```
+
+You can use this with `List.map chatLineView model.chatLines` to get a list of children from the model list.
+
+Ideally at this point you can submit a chat line and have it pop up up to 2 seconds later. If you open up two browser windows you can even chat to yourself if you'd like. ;)
+
+## Exercise 5: Refactor & Routing
 
 ## Exercise 6: New Game / Join Game
 
 ## Game State 
 
-### ExcerciseWaiting For Players State
+### Excercise 7: Waiting For Players State
 
 ### Exercise 8: Pregame State
 
