@@ -142,7 +142,7 @@ At this point you should be feeling fairly comfortable with making a basic form 
 
 Lets hook into Form HE.onSubmit to make the backend call when the user presses enter or clicks login.
 
-- Add a Submit and `HandleLoginResp (Result Http.Error String)` to the Msg.
+- Add a LoginSubmit to the Msg.
 - Hook HE.onSubmit on the form element to the LoginSubmit Msg.
 - On the update function, add the Submit handler which fires off to the backend..  
 - Replace the command in the initialiser with Cmd.none
