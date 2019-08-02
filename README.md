@@ -195,7 +195,7 @@ Once we have that function written we can then change our update submit handler 
                 Err problems ->
                     ( { model
                         | registerValidationIssues = problems
-                        | token 
+                        , token = Nothing
                       }
                     , Cmd.none
                     )
