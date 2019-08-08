@@ -2,13 +2,11 @@
 
 This workshop is designed to step you through the basics of elm and progress through to making an SPA like thing. 
 
-To do this, we are going to implement a frontend for the board game Avalon (against a preexisting backend). This clone is ridiculously satirically FP themed and is not to be taken seriously, but should be a lot of fun to write. :)
+To do this, we are going to implement a frontend for the board game Avalon (against a preexisting backend). This clone is farcically FP themed and is not to be taken seriously, but should be a lot of fun to write. :)
 
 ## Elm Motivations
 
-Elm is a statically typed, purely functional programming language for building browser frontends. It has an extremely high safety to weight ratio and gives a lot of safety over something like typescript + react + redux (which results in a pretty similar program shape).
-
-Given that it is the most lightweight purely functional UI library, it's worth learning for the sake of learning to teach some FP concepts that you can take back to typescript. It's also very capable of producing really rich frontends, but it can be a lot of work if your app needs to talk to a lot of Javascript API (e.g Google Maps).
+Elm is a statically typed, purely functional programming language for building browser frontends. It is the simplest possible model that allows you to make a UI in a purely functional way. It has an extremely high safety to weight ratio and gives a lot of safety over something like typescript + react + redux (which results in a pretty similar program shape). For this reason, it's worth learning for the sake of learning to teach some FP concepts that you can take back to your other frameworks. It's also very capable of producing really rich frontends, but it can be a lot of work if your app needs to talk to a lot of Javascript API (e.g Google Maps).
 
 If things compile, you have a very low chance of your code crashing modulo a few interop things. It also creates very small payloads and the compiler is optimised for tight feedback loops without waiting on the compiler too much, which makes it a very attractive option!
 
@@ -16,33 +14,79 @@ If things compile, you have a very low chance of your code crashing modulo a few
 
 You'll need a few things before you can start:
 
-- Checkout this code to your machine:
-  - `git clone --recurse-submodules https://github.com/benkolera/elm-workshop.git`
-- Install nodejs and npm
-  - https://nodejs.org/en/download/package-manager/
-  - Have npm setup to install global things into ~ https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
-- Your favourite text editor
-  - If you use vscode, installing the elm plugin is super handy 
-  - If you set formatOnSave to be true in vscode, having elm format installed is awesome `npm install -g elm-format`
-- Install docker and start the backend:
-  - https://docs.docker.com/install/
-  - `docker run -ti -p8001:8001 benkolera/dissidence-backend:latest`
-  - You should see `Starting server on port 8001`
-- Start the frontend dev server:
+### Workshop Code Checkout
+
+Don't forget the submodule part if you want the final version of the code! :)
+
+```
+git clone --recurse-submodules https://github.com/benkolera/elm-workshop.git
+```
+
+### Install nodejs and npm
+If you don't already have node and npm, please follow the instructions for your OS: https://nodejs.org/en/download/package-manager/. If you are on nixos you'll want `nodejs nodePackages.npm` from pkgs.
+
+It is also a good idea to have npm setup to install global things into your home directory rather than in a system location: https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
+
+### Install Elm & Elm Format
+
+If you aren't on nixos: 
+
+```bash
+npm i -g elm
+npm i -g elm-format # (highly recommended for it to auto format your code while you are learning).
+```
+
+If you are on nixos you'll want `elmPackages.elm elmPackages.elm-format` from pkgs. 
+
+### Editor Setup 
+
+#### vscode (recommended)
+  - Instal the elm plugin for syntax highlighting and compilation checks in editor. 
+  - If you set formatOnSave to be true in vscode for vscode to auto elm-format on save. Otherwise you can just run the format command periodically.
+
+#### Intellij
+
+  - If you open up an elm file, it'll walk you through setting up the elm plugin, finding elm, elm-format and the elm.json.
+
+#### kakoune
+  - Elm syntax highlighting comes standard. No compliation though, so you'll have to watch the parcel watcher for errors.
+  - To setup formatting you need to link it to the formatter command: 
+   
+```
+      hook global WinSetOption filetype=elm %{
+        set window formatcmd 'elm-format --stdin'
+      }
+```
+
+### Install docker and start the backend:
+
+On most systems, you can just follow along with: https://docs.docker.com/install/
+
+On nixos, setting `virtualisation.docker.enable.true` and a nixos-rebuild should do the trick.
+
+To test the backend, run `docker run -ti -p8001:8001 benkolera/dissidence-backend:latest` and you should see `Starting server on port 8001`.
+
+### Frontends Setup
+
+There are two frontends that you probably want to have setup and running. The workshop code that you'll be editing in this directory `./src` at http://localhost:1235 and the frontend in the completed app in `./dissidence/frontend/` on http://localhost:1234 (so that you can see the final result and test that you are doing the right thing).
+
+- Start the workshop server: 
   - run `npm install` in this directory 
   - run `npm run dev` to get the dev server running.
-  - Visit http://localhost:1234 and you should see a happy page!
-  - Open up src/Main.elm in vscode and change the text. Your page should be automatically reloaded!
+  - Visit http://localhost:1235 and you should see a happy page! If you see a blank page, just ctrl-c the server and restart it (this often happens on the first run). 
+  - Open up src/Main.elm in your editor and change the text. Your page should be automatically reloaded!
 - Start the fully implemented app:
   - Control-C the dev server from before 
   - cd ./dissidence/frontend
   - run `npm install` 
   - run `npm run dev` to get the dev server running.
-  - Visit http://localhost:1234 and you should see a login page! If you can login with "user1" / "pass" everything is all good! :)
+  - Visit http://localhost:1234 and you should see a login page (If you see a blank page, restart)! If you can login with "user1" / "pass" everything is all good! :)
 
 You're all set to go at this point!
 
 ## Project Layout
+
+### Critical Pieces
 
 - package.json : Specifies our elm compiler and parcel version and the scripts to run parcel for us
 - elm.json : The elm dependencies that our UI will use. 
@@ -50,18 +94,24 @@ You're all set to go at this point!
   - src/index.html : The html file that is the basis of our SPA
   - src/app.scss : A premade sass stylesheet for the app
   - src/index.js : The javascript 
-  - src/Main.elm : The main elm entrypoint
+  - src/Main.elm : The main elm entrypoint. This is what you'll be editing for the first exercise!
   - src/fonts : Some gratuitous fonts for the app
+
+- dissidence/ : This submodule is my fully finished version of the app. Go hunting in there for hints or just explore and tinker with it it if you prefer that to doing the workshop.
+- answers/exN : These directories contain the code as of that exercise for you to peek at if you are confused about something or need a clue.
+
+### Stuff that we'll use later
+
 - api/Generated/Api.elm : This is an autogenerated set of backend calls that our app can call. It is generated by servant-elm. You would only care about servant-elm if you have a backend written in haskell, as it means that your UI and backend routes and types are much more easily kept in sync. If you don't have a haskell backend, you'd probably write that file by hand. 
 - Stuff that we'll get to later:
   - src/Utils.elm : Some handy functions missing from the core libs
   - src/Route.elm : Route types that we'll use later
   - src/Page.elm : Page Abstraction that we'll use later
   - src/Session.elm : Player session
-- dissidence/ : This submodule is my fully finished version of the app. Go hunting in there for hints or just explore and tinker with it it if you prefer that to doing the workshop.
-- prerefactor/ : This is a copy of the app right before the refactor. Use this as your "answer" up until the refactoring step. 
 
 ## Elm Basics
+
+TODO: Add basic outline about elm architecture and terminology that I use in this workshop.
 
 It's a good idea to learn the basics of elm syntax and ideas. https://guide.elm-lang.org/ is an excellent start. You should read the following sections:
 - Core Language

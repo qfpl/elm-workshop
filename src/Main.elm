@@ -26,7 +26,6 @@ main =
 type Msg
     = HandleLoginResp (Result Http.Error String)
 
-
 type alias Model =
     { backendOK : Bool
     , backendError : Maybe String
