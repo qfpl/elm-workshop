@@ -2,6 +2,7 @@
 :toc: macro
 :toclevels: 2
 :doctype: article
+:toc-title: 
 
 This workshop is designed to step you through the basics of elm and progress through to making an SPA like thing. 
 
