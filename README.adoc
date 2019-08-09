@@ -1,8 +1,14 @@
-# Elm Workshop
+= Elm Workshop
+:toc: macro
+:toclevels: 2
+:doctype: article
+:toc-title: Table of Contents
 
 This workshop is designed to step you through the basics of elm and progress through to making an SPA like thing. 
 
 To do this, we are going to implement a frontend for the board game Avalon (against a preexisting backend). This clone is farcically FP themed and is not to be taken seriously, but should be a lot of fun to write. :)
+
+toc::[]
 
 ## Elm Motivations
 
@@ -41,12 +47,17 @@ If you are on nixos you'll want `elmPackages.elm elmPackages.elm-format` from pk
 ### Editor Setup 
 
 #### vscode (recommended)
-  - Instal the elm plugin for syntax highlighting and compilation checks in editor. 
+
+  - Install the elm plugin for syntax highlighting and compilation checks in editor. 
   - If you set formatOnSave to be true in vscode for vscode to auto elm-format on save. Otherwise you can just run the format command periodically.
 
 #### Intellij
 
-  - If you open up an elm file, it'll walk you through setting up the elm plugin, finding elm, elm-format and the elm.json.
+  - Open up an elm file and it'll walk you through setting up the elm plugin, finding elm, elm-format and the elm.json.
+
+#### Spacemacs
+
+  - Install the elm layer, everything should just work if elm and elm-format are on your path. You may want to enable elm-format-on-save-mode with importing the layer like this `(elm :variables elm-sort-imports-on-save t)`. You'll need the generic syntax checking layer on to get compilation errors in spacemacs.
 
 #### kakoune
   - Elm syntax highlighting comes standard. No compliation though, so you'll have to watch the parcel watcher for errors.
@@ -62,7 +73,7 @@ If you are on nixos you'll want `elmPackages.elm elmPackages.elm-format` from pk
 
 On most systems, you can just follow along with: https://docs.docker.com/install/
 
-On nixos, setting `virtualisation.docker.enable.true` and a nixos-rebuild should do the trick.
+On nixos, setting `virtualisation.docker.enable.true` and a nixos-rebuild should do the trick. Alternatively, with nix you could just run the backend in `nix-shell --run "cabal new-run backend"` if you are comfortable running haskell code via cabal. 
 
 To test the backend, run `docker run -ti -p8001:8001 benkolera/dissidence-backend:latest` and you should see `Starting server on port 8001`.
 
@@ -125,21 +136,29 @@ Keep this open, as well as: https://package.elm-lang.org/packages/elm/core/1.0.2
 
 ## How to engage with this workshop
 
-There is way too much to get done in a single sitting. Don't feel daunted by this: the idea is that the workshop starts you off and gets you moving and you can finish the rest later if you are keen. 
+There is way too much to get done in a single sitting. Don't feel daunted by this: the idea is that the workshop starts you off and gets you moving and you can finish the rest in other sittings.
 
-If this workshop feels too much of a deep end for you, check out https://elmprogramming.com/ for a much slower paced intro that explains the motivations behind certain designs. It is still for Elm 0.18 so there will be some things that don't compile. Sing out for help if you hit things like that. Always check the docs for the libary at package.elm-lang.org.
+If this workshop feels too much of a deep end for you, check out https://elmprogramming.com/ for a much slower paced intro that explains the motivations behind certain designs. It is still for Elm 0.18 so there will be some things that don't compile. Contact me if you get stuck with anything via a github issue or on IRC (see the next section). Always check the docs for the libary at package.elm-lang.org.
 
 If you are ready to write the SPA, check out the description of the app in dissidence/README.md. We'll step by step build this starting page into a full implementation of the frontend for the game. This is definitely a challenge, but the backend does most of the heavy lifting of maintaining the game state.
 
-What is really helpful is that you can stop the frontend server (the `npm run dev` thing) and then run the fully implemented one. They both talk to the same database, so it's nice to be able to see what the real one does. Lean on this if my descriptions are confusing.
+Having the fully complete frontend (on port 1234) and your workshop code (on port 1235) is a super handy thing to do as it means that you can check your behaviour against the expected behaviours. They both talk to the same backend.
 
-The page should live reload as you make changes and you should even see compile errors in the browser window. It's a good idea to keep that window visible so you get constant and quick feedback.
+The page should live reload as you make changes and you should even see compile errors in the browser window. It's a good idea to keep that window visible so you get constant and quick feedback. If you are using an editor 
 
-We're going to do things in a simple single-file fashion first then refactor later once the basics are down.
+We're going to do things in a simple single-file fashion first then refactor later once the basics are down. It's going to feel like we are in a bad place just before the refactor, but I specifically want to start things off simple then motivate the more complicated Page Components later. 
 
-Follow the types. Have a look at what type the backend call needs and then figure out the UI bits that you need to get that together. 
+Follow the types. Have a look at what type the backend call needs and then figure out the UI bits that you need to get that together. Because the code in api/Generated/Api.elm is auto generated, it's sadly lacking in documentation. Check out the [Backend API](#backend-api) for API details as you need them.
 
 When you need to debug something, using `Debug.log "label for log" value` will console.log that value to the console when the code is run. Handy if something is doing something unexpected. You can use that anywhere.
+
+## How to ask questions or give feedback
+
+Jump into the QFPL room on freenode.net: [freenode webchat](https://webchat.freenode.net/#%23qfpl?nick=Guest_?).
+
+File an issue against this repository. 
+
+PRs welcome to make suggestions on adding/removing/modifying workshop content! :smile:
 
 ## Exercise 1: Login Form
 
@@ -147,7 +166,7 @@ The first thing that we are going to do is make the login form and have that sub
 
 Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet.
 
-### Basic Form
+### Exercise 1.1: Basic Form
 
 We'll take it easy at this point. Replace the entire view with this snippet:
 
@@ -173,11 +192,23 @@ We'll take it easy at this point. Replace the entire view with this snippet:
         ]
 ```
 
-Your browser should reload as soon as you save this. Be sure at this point that you grok what all that Html stuff actually is. It'll start getting harder if you don't understand why things are like this.
+Your browser should reload as soon as you save this. 
+
+[NOTE]
+====
+Be sure at this point that you grok what all that Html stuff actually is. You'll want to understand:
+
+  - That we're importing thing from [elm/html](https://package.elm-lang.org/packages/elm/html/1.0.0/) in a qualified manner: 
+    - [Html](https://package.elm-lang.org/packages/elm/html/1.0.0/Html) as H (how we can go `H.div` to make a div element.
+    - [Html.Attributes](https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes) as HA (e.g HA.placeholder).
+    - [Html.Events](https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events) as HE (e.g HE.onClick: this will come next).
+  - That every element (e.g `H.form`) has a list of attributes (that can be attributes like placeholder or events like onClick that we'll see shortly) and then a list of child elements.
+  - We put text nodes into the dom with `H.text`.
+====
 
 ### Form Model
 
-Lets wire the form up to some model state. 
+Lets wire the form up to some model state and get a feel for how events flow from user interactions with our view to our update function. 
 
 - Add a loginPlayerId : String and loginPassword : String to the model record. 
 - Don't forget to initialise these to empty string in the init function.
@@ -400,7 +431,7 @@ Ideally at this point you can submit a chat line and have it pop up up to 2 seco
 
 ## Game State 
 
-### Excercise 7: Waiting For Players State
+### Exercise 7: Waiting For Players State
 
 ### Exercise 8: Pregame State
 
@@ -413,3 +444,53 @@ Ideally at this point you can submit a chat line and have it pop up up to 2 seco
 ### Exercise 11: Firing Round
 
 ### Exercise 12: Completed
+
+## Appendixes
+
+### Backend API
+
+This section is to help you figure out the shape of the backend calls. It's manually created, so there is a chance that it may get out of date with the actual API and types. Always trust the types over the documentation if there is a disagreement.
+
+#### Unauthenticated Calls
+
+##### POST /api/login (postApiLogin)
+
+This makes a login request to the backend. It returns the user session token that needs to be provided to requests that require the user to be logged in (the auth_token parameters that you see in other calls). Otherwise it'll return a 401 if the login failed.
+
+##### POST /api/players (postApiPlayers)
+
+This registers a new user. 400 if the user already exists. Return a session token for use on authenticated calls (just like login).
+
+#### Authenticated Calls
+
+All of these calls take a header_authorization Token and either act or have the game state filtered as per the perspective of the player. The thing that needs to be supplied as the token is the result of the login / register call (which is just a string).
+
+##### GET /api/lobby (getApiLobby)
+
+There is a chat room that is not attached to a game that is used for chatting to arrange a game. This call returns all of the chat lines for that lobby. It also takes an optional posix time. If not supplied, it'll grab all of the chat lines, otherwise it'll grab only chat lines after the time specified.
+
+##### POST /api/lobby (postApiLobby)
+
+Appends a new chat line to the lobby on behalf of the player.
+
+##### GET /api/games/joinable (getApiGamesJoinable)
+
+Lists the games that are waiting for players.
+
+##### POST /api/games (postApiGames)
+
+Creates a new game owned by the logged in user.
+
+##### GET /api/games/:game_id (getApiGamesByGameId)
+
+Gets the current state of the game as per the perspective of the logged in player.
+
+##### POST /api/games/:game_id:/events (postApiGamesByGameIdEvents)
+
+Appends a new event to the game (chat or a player making a game action) on behalf of the logged in player. Returns nothing.
+
+##### GET /api/games/:game_id:/events (getApiGamesByGameIdEvents)
+
+Gets all of the game events as seen by the logged in player (some information will be hidden because not all players can see all the game state). This optionally takes a posix time. If not supplied, it'll grab all of the events, otherwise it'll grab only events after the time specified.
+
+

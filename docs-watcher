@@ -1,0 +1,1 @@
+nix-shell .docs --run "guard -G .docs/Guardfile"
