@@ -1,5 +1,5 @@
 = Elm Workshop
-:toc: macro
+:toc: right
 :toclevels: 2
 :doctype: article
 :toc-title: Table of Contents
@@ -7,8 +7,6 @@
 This workshop is designed to step you through the basics of elm and progress through to making an SPA like thing. 
 
 To do this, we are going to implement a frontend for the board game Avalon (against a preexisting backend). This clone is farcically FP themed and is not to be taken seriously, but should be a lot of fun to write. :)
-
-toc::[]
 
 ## Elm Motivations
 
