@@ -6,7 +6,7 @@
 :icons: font
 
 :tip-caption: :bulb: Tip
-:note-caption: :memo: Memo
+:note-caption: :memo: Note
 :important-caption: :heavy_exclamation_mark: Important
 :warning-caption: :warning: Warning
 
