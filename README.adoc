@@ -239,7 +239,7 @@ Be sure at this point that you grok what all that Html stuff actually is. You'll
 * We put text nodes into the dom with `H.text`.
 ====
 
-### Form Model
+### Exercise 1.2: Form Model
 
 Lets wire the form up to some model state and get a feel for how events flow from user interactions with our view to our update function. 
 
@@ -260,7 +260,7 @@ There is no state that we can query of a form element in Elm. All we can do is l
 At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your Msg type and the model gets updated in the update function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
 ====
 
-### Sending the backend call off
+### Exercise 1.3: Sending the backend call off
 
 Lets hook into Form HE.onSubmit to make the backend call when the user presses enter or clicks login.
 
