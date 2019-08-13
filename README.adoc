@@ -3,6 +3,7 @@
 :toclevels: 2
 :doctype: article
 :toc-title: 
+:icons: font
 
 This workshop is designed to step you through the basics of elm and progress through to making an SPA like thing. 
 
@@ -31,7 +32,7 @@ git clone --recurse-submodules https://github.com/benkolera/elm-workshop.git
 ### Install nodejs and npm
 If you don't already have node and npm, please follow the instructions for your OS: https://nodejs.org/en/download/package-manager/. If you are on nixos you'll want `nodejs nodePackages.npm` from pkgs.
 
-It is also a good idea to have npm setup to install global things into your home directory rather than in a system location: https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
+If you haven't dealt with NPM before, it is a good idea to have npm setup to install global things into your home directory rather than in a system location where you need to install things with sudo: https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
 
 ### Install Elm & Elm Format
 
@@ -48,11 +49,17 @@ If you are on nixos you'll want `elmPackages.elm elmPackages.elm-format` from pk
 
 #### vscode (recommended)
 
+Visual Studio Code is the option with the highest power to weight ratio where weight is defined in terms of download size and setup difficulty. You'll have something that reformats code as you save and shows compiler errors in the code if you follow these steps. 
+
+  - Install vscode via your package manager or via: https://code.visualstudio.com/Download  
   - Install the elm plugin for syntax highlighting and compilation checks in editor. 
-  - If you set formatOnSave to be true in vscode for vscode to auto elm-format on save. Otherwise you can just run the format command periodically.
+  - If you set formatOnSave to be true in vscode for vscode to auto elm-format on save. Otherwise you can just run the format command periodically with C-P.
 
 #### Intellij
 
+This method is probably preferrable if you like intellij. It gets to the same level as vscode just with a bigger download size.
+
+  - Install the community edition of idea via your package manager or via: https://www.jetbrains.com/idea/download/ . The ultimate edition is fine too. 
   - Open up an elm file and it'll walk you through setting up the elm plugin, finding elm, elm-format and the elm.json.
 
 #### Spacemacs
@@ -73,7 +80,7 @@ If you are on nixos you'll want `elmPackages.elm elmPackages.elm-format` from pk
 
 On most systems, you can just follow along with: https://docs.docker.com/install/
 
-On nixos, setting `virtualisation.docker.enable.true` and a nixos-rebuild should do the trick. Alternatively, with nix you could just run the backend in `nix-shell --run "cabal new-run backend"` if you are comfortable running haskell code via cabal. 
+On nixos, setting `virtualisation.docker.enable.true` and a nixos-rebuild should do the trick. Alternatively, with nix you could just run the backend in `nix-shell --run "cabal new-run backend"` from `./dissidence/backend` if you are comfortable running haskell code via cabal. 
 
 To test the backend, run `docker run -ti -p8001:8001 benkolera/dissidence-backend:latest` and you should see `Starting server on port 8001`.
 
@@ -81,17 +88,17 @@ To test the backend, run `docker run -ti -p8001:8001 benkolera/dissidence-backen
 
 There are two frontends that you probably want to have setup and running. The workshop code that you'll be editing in this directory `./src` at http://localhost:1235 and the frontend in the completed app in `./dissidence/frontend/` on http://localhost:1234 (so that you can see the final result and test that you are doing the right thing).
 
-- Start the workshop server: 
-  - run `npm install` in this directory 
-  - run `npm run dev` to get the dev server running.
-  - Visit http://localhost:1235 and you should see a happy page! If you see a blank page, just ctrl-c the server and restart it (this often happens on the first run). 
-  - Open up src/Main.elm in your editor and change the text. Your page should be automatically reloaded!
-- Start the fully implemented app:
-  - Control-C the dev server from before 
-  - cd ./dissidence/frontend
-  - run `npm install` 
-  - run `npm run dev` to get the dev server running.
-  - Visit http://localhost:1234 and you should see a login page (If you see a blank page, restart)! If you can login with "user1" / "pass" everything is all good! :)
+* Start the workshop server: 
+** run `npm install` in this directory to install parcel
+** run `npm run dev` to get the parcel dev server running.
+** Visit http://localhost:1235 and you should see a happy page! If you see a blank page, just ctrl-c the server and restart it (this often happens on the first run). 
+**  Open up src/Main.elm in your editor and change the text. Your page should be automatically reloaded!
+* Start the fully implemented app:
+** Control-C the dev server from before 
+** cd ./dissidence/frontend
+** run `npm install` 
+** run `npm run dev` to get the dev server running.
+** Visit http://localhost:1234 and you should see a login page (If you see a blank page, restart)! If you can login with "user1" / "pass" everything is all good! :)
 
 You're all set to go at this point!
 
@@ -99,26 +106,25 @@ You're all set to go at this point!
 
 ### Critical Pieces
 
-- package.json : Specifies our elm compiler and parcel version and the scripts to run parcel for us
-- elm.json : The elm dependencies that our UI will use. 
-- The following pieces are bundled together with parcel (the thing that gets run when you `npm run dev`):
-  - src/index.html : The html file that is the basis of our SPA
-  - src/app.scss : A premade sass stylesheet for the app
-  - src/index.js : The javascript 
-  - src/Main.elm : The main elm entrypoint. This is what you'll be editing for the first exercise!
-  - src/fonts : Some gratuitous fonts for the app
-
-- dissidence/ : This submodule is my fully finished version of the app. Go hunting in there for hints or just explore and tinker with it it if you prefer that to doing the workshop.
-- answers/exN : These directories contain the code as of that exercise for you to peek at if you are confused about something or need a clue.
+* link:package.json[package.json] : Specifies our elm compiler and parcel version and the scripts to run parcel for us
+* link:elm.json[elm.json] : The elm dependencies that our UI will use. 
+* The following pieces are bundled together with parcel (the thing that gets run when you `npm run dev`):
+** link:src/index.html[src/index.html]  : The html file that is the basis of our SPA
+** link:src/app.scss[src/app.scss]  : A premade sass stylesheet for the app
+** link:src/index.js[src/index.js]  : The javascript 
+** link:src/Main.elm[./src/Main.elm]  : The main elm entrypoint. This is what you'll be editing for the first exercise!
+** link:src/fonts[src/fonts/]  : Some gratuitous fonts for the app
+* link:dissidence[dissidence] : This submodule is my fully finished version of the app. Go hunting in there for hints or just explore and tinker with it it if you prefer that to doing the workshop.
+* link:answers[answers] : These directories contain the code as of that exercise for you to peek at if you are confused about something or need a clue.
 
 ### Stuff that we'll use later
 
-- api/Generated/Api.elm : This is an autogenerated set of backend calls that our app can call. It is generated by servant-elm. You would only care about servant-elm if you have a backend written in haskell, as it means that your UI and backend routes and types are much more easily kept in sync. If you don't have a haskell backend, you'd probably write that file by hand. 
-- Stuff that we'll get to later:
-  - src/Utils.elm : Some handy functions missing from the core libs
-  - src/Route.elm : Route types that we'll use later
-  - src/Page.elm : Page Abstraction that we'll use later
-  - src/Session.elm : Player session
+* api/Generated/Api.elm : This is an autogenerated set of backend calls that our app can call. It is generated by servant-elm. You would only care about servant-elm if you have a backend written in haskell, as it means that your UI and backend routes and types are much more easily kept in sync. If you don't have a haskell backend, you'd probably write that file by hand. 
+* Stuff that we'll get to later:
+** link:src/Utils.elm[Utils.elm] : Some handy functions missing from the core libs
+** link:src/Route.elm[Route.elm] : Route types that we'll use later
+** link:src/Page.elm[Page.elm] : Page Abstraction that we'll use later
+** link:src/Session.elm[Session.elm] : Player session
 
 ## Elm Basics
 
@@ -138,7 +144,7 @@ Keep this open, as well as: https://package.elm-lang.org/packages/elm/core/1.0.2
 
 There is way too much to get done in a single sitting. Don't feel daunted by this: the idea is that the workshop starts you off and gets you moving and you can finish the rest in other sittings.
 
-If this workshop feels too much of a deep end for you, check out https://elmprogramming.com/ for a much slower paced intro that explains the motivations behind certain designs. It is still for Elm 0.18 so there will be some things that don't compile. Contact me if you get stuck with anything via a github issue or on IRC (see the next section). Always check the docs for the libary at package.elm-lang.org.
+If this workshop feels too much of a deep end for you, check out https://elmprogramming.com/ for a much slower paced intro that explains the motivations behind certain functional designs. It is still for Elm 0.18 so there will be some things that don't compile. Contact me if you get stuck with anything via a github issue or on IRC (see the next section). Always check the docs for the libary at package.elm-lang.org.
 
 If you are ready to write the SPA, check out the description of the app in dissidence/README.md. We'll step by step build this starting page into a full implementation of the frontend for the game. This is definitely a challenge, but the backend does most of the heavy lifting of maintaining the game state.
 
@@ -151,6 +157,23 @@ We're going to do things in a simple single-file fashion first then refactor lat
 Follow the types. Have a look at what type the backend call needs and then figure out the UI bits that you need to get that together. Because the code in api/Generated/Api.elm is auto generated, it's sadly lacking in documentation. Check out the [Backend API](#backend-api) for API details as you need them.
 
 When you need to debug something, using `Debug.log "label for log" value` will console.log that value to the console when the code is run. Handy if something is doing something unexpected. You can use that anywhere.
+
+## Exercise Structure
+
+The exercises should all follow the following form (the hint block and ending note are optional, but they'll always be something at least to do):
+
+### Exercise 0: Example Exercise
+
+****
+The hint section of an exercise may give you a prompt to something that you may need to read if you get stuck.
+****
+
+The things to do will be normal unformatted text and code.
+
+[NOTE]
+====
+The note section will try to list out the things that you should have learned in this exercise so that you can check that you're progressing and didn't miss something along the way. 
+====
 
 ## How to ask questions or give feedback
 
@@ -170,7 +193,8 @@ Remember that you can reread https://guide.elm-lang.org/architecture/forms.html 
 
 We'll take it easy at this point. Replace the entire view with this snippet:
 
-```elm
+[source,elm]
+----
     H.div [ HA.class "login-box" ]
         [ H.h1 [] [ H.text "Login" ]
         , H.form []
@@ -190,7 +214,7 @@ We'll take it easy at this point. Replace the entire view with this snippet:
                 [ H.text "Login" ]
             ]
         ]
-```
+----
 
 Your browser should reload as soon as you save this. 
 
@@ -198,12 +222,12 @@ Your browser should reload as soon as you save this.
 ====
 Be sure at this point that you grok what all that Html stuff actually is. You'll want to understand:
 
-  - That we're importing thing from [elm/html](https://package.elm-lang.org/packages/elm/html/1.0.0/) in a qualified manner: 
-    - [Html](https://package.elm-lang.org/packages/elm/html/1.0.0/Html) as H (how we can go `H.div` to make a div element.
-    - [Html.Attributes](https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes) as HA (e.g HA.placeholder).
-    - [Html.Events](https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events) as HE (e.g HE.onClick: this will come next).
-  - That every element (e.g `H.form`) has a list of attributes (that can be attributes like placeholder or events like onClick that we'll see shortly) and then a list of child elements.
-  - We put text nodes into the dom with `H.text`.
+* That we're importing thing from [elm/html](https://package.elm-lang.org/packages/elm/html/1.0.0/) in a qualified manner: 
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html[Html as H] (how we can go `H.div` to make a div element).
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes[Html.Attributes as HA] (e.g HA.placeholder).
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events[Html.Events as HE] (e.g HE.onClick: this will come next).
+* That every element (e.g `H.form`) has a list of attributes (that can be attributes like placeholder or events like onClick that we'll see shortly) and then a list of child elements.
+* We put text nodes into the dom with `H.text`.
 ====
 
 ### Form Model

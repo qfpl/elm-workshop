@@ -1,1 +1,3 @@
+touch README.html
+nix-shell -p epiphany --run 'epiphany README.html &'
 nix-shell .docs --run "guard -G .docs/Guardfile"
