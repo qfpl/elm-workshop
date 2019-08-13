@@ -183,7 +183,7 @@ The note section will try to list out the things that you should have learned in
 
 ## How to ask questions or give feedback
 
-Jump into the QFPL room on freenode.net: [freenode webchat](https://webchat.freenode.net/#%23qfpl?nick=Guest_?).
+Jump into the QFPL room on freenode.net: https://webchat.freenode.net/#%23qfpl?nick=Guest_?[Freenode Webchat].
 
 File an issue against this repository. 
 
@@ -193,11 +193,14 @@ PRs welcome to make suggestions on adding/removing/modifying workshop content! :
 
 The first thing that we are going to do is make the login form and have that submitting to the backend. 
 
+[TIP]
+====
 Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet.
+====
 
 ### Exercise 1.1: Basic Form
 
-We'll take it easy at this point. Replace the entire view with this snippet:
+We'll take it easy at this point. Replace the entire view with this snippet. This doesn't actually link anything up to our state yet. It's just some form markup that does nothing, but it's important for us to take it slowly! 
 
 [source,elm]
 ----
@@ -222,7 +225,7 @@ We'll take it easy at this point. Replace the entire view with this snippet:
         ]
 ----
 
-Your browser should reload as soon as you save this. 
+Your browser should reload as soon as you save this, showing a form that doesn't do anything. We'll make it do stuff in the next step.
 
 [NOTE]
 ====
@@ -240,14 +243,22 @@ Be sure at this point that you grok what all that Html stuff actually is. You'll
 
 Lets wire the form up to some model state and get a feel for how events flow from user interactions with our view to our update function. 
 
-- Add a loginPlayerId : String and loginPassword : String to the model record. 
+[TIP]
+====
+There is no state that we can query of a form element in Elm. All we can do is listen to an event when the user changes the value and then store that new value in our model. We do this through having constructors in our message to handle certain form fields.
+====
+
+- Add a `loginPlayerId : String` and `loginPassword : String` to the model record so that we can store the player id and the password from the form somewhere. 
 - Don't forget to initialise these to empty string in the init function.
-- Add a SetLoginPlayerId and SetLoginPassword to the Msg sum type
-- Hook up HE.onInput to the new msgs
-- Hook up HA.value to the model.loginPlayerId and model.loginPassword
+- Add a SetLoginPlayerId and SetLoginPassword to the Msg sum type so that we can handle this changes to our update function. These constructors should take a string to pass along the new value from the event.
+- Hook up HE.onInput on each form element to the new `Msg` constructors (i.e `SetLoginPlayerId` and `SetLoginPassword`). If you forgot the String in the constructors you'll get an error like `Expected (String -> Msg) but got Msg`.
+- Hook up HA.value to the model.loginPlayerId and model.loginPassword so that the value properly flows back down from our model to the form element.
 - Implement each new case branch in the update function to set the playerId / password to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
 
+[NOTE]
+====
 At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your Msg type and the model gets updated in the update function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
+====
 
 ### Sending the backend call off
 
