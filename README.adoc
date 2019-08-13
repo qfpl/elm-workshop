@@ -5,6 +5,11 @@
 :toc-title: 
 :icons: font
 
+:tip-caption: :bulb: Tip
+:note-caption: :memo: Memo
+:important-caption: :heavy_exclamation_mark: Important
+:warning-caption: :warning: Warning
+
 This workshop is designed to step you through the basics of elm and progress through to making an SPA like thing. 
 
 To do this, we are going to implement a frontend for the board game Avalon (against a preexisting backend). This clone is farcically FP themed and is not to be taken seriously, but should be a lot of fun to write. :)
@@ -164,9 +169,10 @@ The exercises should all follow the following form (the hint block and ending no
 
 ### Exercise 0: Example Exercise
 
-****
-The hint section of an exercise may give you a prompt to something that you may need to read if you get stuck.
-****
+[TIP]
+====
+The tip section of an exercise may give you a prompt to something that you may need to read if you get stuck.
+====
 
 The things to do will be normal unformatted text and code.
 
@@ -330,8 +336,7 @@ Which means that our login token is of four possible shapes:
 - Success String (The Token is loaded and ready to go)
 - Failure String (The token failed to load and we have an error message)
 
-This is the same as our two eithers, but we now also get feedback when the backend call is in progress, which is very 
-handy!
+This is the same as our two eithers, but we now also get feedback when the backend call is in progress, which is very handy!
 
 Change loginToken and registerToken to be `RemoteData String String` and make the necessary changes as per your compilation errors. There is `RemoteData.mapError` and `Utils.httpErrorToStr that you'll need to make these changes. Be sure to set it to loading just as the backend calls are sent off.
 
