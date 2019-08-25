@@ -262,16 +262,16 @@ At this point you should be feeling fairly comfortable with making a basic form 
 
 ### Exercise 1.3: Sending the backend call off
 
-Lets hook into Form HE.onSubmit to make the backend call when the user presses enter or clicks login.
+Lets hook into Form `HE.onSubmit` to make the backend call when the user presses enter or clicks login.
 
-- Add a LoginSubmit to the Msg.
-- Hook HE.onSubmit on the form element to the LoginSubmit Msg.
-- On the update function, add the Submit handler which fires off to the backend..  
-- Replace the command in the initialiser with Cmd.none
-- Put the call to BE.postApiLogin into the cmd of the LoginSubmit handler.
-- Write some new view that displays the loginError if the Maybe has a value (Pattern matching is fine or you can use Utils.maybe).
+- Add a `LoginSubmit` to the `Msg` type.
+- Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
+- On the update function, add the `LoginSubmit` handler which fires off to the backend..
+- Replace the command in the initialiser with `Cmd.none`
+- Put the call to `BE.postApiLogin` into the cmd of the `LoginSubmit` handler.
+- Write some new view that displays the backendError if the Maybe has a value (Pattern matching is fine or you can use `Utils.maybe`).
 
-This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg HandleLoginResp.
+This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg `HandleLoginResp`.
 
 playerId / password that are already in the database ready for testing are user1 .. user5 with the password "pass".
 
