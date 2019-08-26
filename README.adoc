@@ -271,7 +271,7 @@ Lets hook into Form `HE.onSubmit` to make the backend call when the user presses
 - Put the call to `BE.postApiLogin` into the cmd of the `LoginSubmit` handler.
 - Add a `token : Maybe String` field to the model to store our auth token (if we have one).
 - Update the `token` field when we get a response to our login (`HandleLoginResp` branches in our `update` function).
-- Write some new view that displays the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe`).
+- Update the `view` function to display the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe`).
 
 This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg `HandleLoginResp`.
 
