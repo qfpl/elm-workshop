@@ -331,7 +331,7 @@ Finish make sure the new view is all wired up and does what you'd expect. At thi
 
 ## Exercise 3: Remote Data Pattern
 
-There's a pattern emerging here for a piece of data that isn't loaded initially and can fail error fetching it. There's a lovely abstraction for this called the RemoteData pattern. 
+There's a pattern emerging here for a piece of data that isn't loaded initially and can fail when fetching it. There's a lovely abstraction for this called the `RemoteData` pattern. 
 
 https://package.elm-lang.org/packages/krisajenkins/remotedata/latest/RemoteData
 
