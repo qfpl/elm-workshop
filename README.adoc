@@ -314,14 +314,14 @@ Once we have that function written we can then change our update submit handler 
         Submit ->
             case validateDbPlayer model of
                 Ok dbPlayer ->
-                    ( { model | registerValidationIssues = [], token = Nothing }
-                    , BE.postApiPlayers dbPlayer HandleRegisterResponse
+                    ( { model | registerValidationIssues = [], registerToken = Nothing }
+                    , BE.postApiPlayers dbPlayer HandleRegisterResp
                     )
 
                 Err problems ->
                     ( { model
                         | registerValidationIssues = problems
-                        , token = Nothing
+                        , registerToken = Nothing
                       }
                     , Cmd.none
                     )
