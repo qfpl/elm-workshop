@@ -286,15 +286,16 @@ Lets do the same form, but for a register page that takes the password twice and
 We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level).
 
 Add new model fields and message constructors for:
- - `registerPlayerId`
- - `registerPassword`
- - `registerPasswordAgain`
- - `registerValidationIssues`
- - `registerToken`
- - `registerError`
- - `SetRegisterPlayerId`
- - `SetRegisterPassword`
- - `SetRegisterPasswordAgain`.
+
+- `registerPlayerId`
+- `registerPassword`
+- `registerPasswordAgain`
+- `registerValidationIssues`
+- `registerToken`
+- `registerError`
+- `SetRegisterPlayerId`
+- `SetRegisterPassword`
+- `SetRegisterPasswordAgain`.
 
 We should also rename `backendError` to `loginError` and `token` to `loginToken` to make things clear and consistent.
 
