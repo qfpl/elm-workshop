@@ -279,7 +279,7 @@ playerId / password that are already in the database ready for testing are user1
 
 Lets do the same form, but for a register page that takes the password twice and makes sure that they are equal. 
 
-We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level). Add new model fields and message constructors for registerPlayerId, registerPassword, registerPasswordAgain, SetRegisterPlayerId, SetRegisterPassword, SetRegisterPasswordAgain.
+We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level). Add new model fields and message constructors for `registerPlayerId`, `registerPassword`, `registerPasswordAgain`, `SetRegisterPlayerId`, `SetRegisterPassword`, `SetRegisterPasswordAgain`.
 
 Our backend call for registering a new user is:
 
@@ -296,12 +296,12 @@ On our submit handler, we want to check whether the passwords match and only cal
 
 A good place to start is to write a function with this signature:
 
-```
+```elm
 validateDbPlayer : Model -> Result.Result (List String) BE.DbPlayer
 validateDbPlayer model =
 ```
 
-So it takes the model and returns either a list of errors or a valid DbPlayer ready to submit to the backend. Try writing this with a simple if statement and checking whether `model.registerPassword == model.registerPasswordAgain`.
+So it takes the model and returns either a list of errors or a valid `DbPlayer` ready to submit to the backend. Try writing this with a simple if statement and checking whether `model.registerPassword == model.registerPasswordAgain`.
 
 
 Once we have that function written we can then change our update submit handler to look like:
