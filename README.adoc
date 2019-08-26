@@ -314,17 +314,17 @@ Once we have that function written we can then change our update submit handler 
         Submit ->
             case validateDbPlayer model of
                 Ok dbPlayer ->
-                    ( { model | registerValidationIssues = [] }
+                    ( { model | registerValidationIssues = [], token = Nothing }
                     , BE.postApiPlayers dbPlayer HandleRegisterResponse
                     )
 
                 Err problems ->
                     ( { model
                         | registerValidationIssues = problems
+                        , token = Nothing
                       }
                     , Cmd.none
                     )
-
 ```
 
 Finish make sure the new view is all wired up and does what you'd expect. At this point you should be pretty comfortable creating new UI / model / msgs from scratch.
