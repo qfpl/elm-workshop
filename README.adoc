@@ -359,6 +359,7 @@ So now we can say in our model:
 ```
 
 Which means that our login token is of four possible shapes:
+
 - `NotAsked` (We haven't done the backend call for it yet)
 - `Loading` (The backend call is in progress and we could show a spinner, disable a form, etc.)
 - `Success String` (The token is loaded and ready to go)
@@ -366,12 +367,9 @@ Which means that our login token is of four possible shapes:
 
 This is the same as our two eithers, but we now also get feedback when the backend call is in progress, which is very handy!
 
-[IMPORTANT]
-===========
 Change `loginToken` and `registerToken` to be `RemoteData String String` and make the necessary changes as per your compilation errors. There is `RemoteData.mapError` and `Utils.httpErrorToStr that you'll need to make these changes. Be sure to set it to loading just as the backend calls are sent off.
 
 Change the `view` to pattern match on the `RemoteData` constructors to print out `NotAsked`/`Loading`/`Success`/`Failure` output.
-===========
 
 As always, you can check in with `prerefactor/Main.elm` or ask for help if you need hints.
 
