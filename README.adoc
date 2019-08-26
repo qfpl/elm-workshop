@@ -283,7 +283,20 @@ It's worth calling out that we're not doing anything with our token yet. That co
 
 Lets do the same form, but for a register page that takes the password twice and makes sure that they are equal. 
 
-We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level). Add new model fields and message constructors for `registerPlayerId`, `registerPassword`, `registerPasswordAgain`, `registerValidationIssues`, `SetRegisterPlayerId`, `SetRegisterPassword`, `SetRegisterPasswordAgain`.
+We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level).
+
+Add new model fields and message constructors for:
+ - `registerPlayerId`
+ - `registerPassword`
+ - `registerPasswordAgain`
+ - `registerValidationIssues`
+ - `registerToken`
+ - `registerError`
+ - `SetRegisterPlayerId`
+ - `SetRegisterPassword`
+ - `SetRegisterPasswordAgain`.
+
+We should also rename `backendError` to `loginError` and `token` to `loginToken` to make things clear and consistent.
 
 Our backend call for registering a new user is:
 
