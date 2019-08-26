@@ -233,9 +233,9 @@ Be sure at this point that you grok what all that Html stuff actually is. You'll
 
 * That we're importing thing from [elm/html](https://package.elm-lang.org/packages/elm/html/1.0.0/) in a qualified manner: 
 ** https://package.elm-lang.org/packages/elm/html/1.0.0/Html[Html as H] (how we can go `H.div` to make a div element).
-** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes[Html.Attributes as HA] (e.g HA.placeholder).
-** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events[Html.Events as HE] (e.g HE.onClick: this will come next).
-* That every element (e.g `H.form`) has a list of attributes (that can be attributes like placeholder or events like onClick that we'll see shortly) and then a list of child elements.
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes[Html.Attributes as HA] (e.g `HA.placeholder`).
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events[Html.Events as HE] (e.g `HE.onClick`: this will come next).
+* That every element (e.g `H.form`) has a list of attributes (that can be attributes like `placeholder` or events like `onClick` that we'll see shortly) and then a list of child elements.
 * We put text nodes into the dom with `H.text`.
 ====
 
@@ -249,15 +249,15 @@ There is no state that we can query of a form element in Elm. All we can do is l
 ====
 
 - Add a `loginPlayerId : String` and `loginPassword : String` to the model record so that we can store the player id and the password from the form somewhere. 
-- Don't forget to initialise these to empty string in the init function.
-- Add a SetLoginPlayerId and SetLoginPassword to the Msg sum type so that we can handle this changes to our update function. These constructors should take a string to pass along the new value from the event.
-- Hook up HE.onInput on each form element to the new `Msg` constructors (i.e `SetLoginPlayerId` and `SetLoginPassword`). If you forgot the String in the constructors you'll get an error like `Expected (String -> Msg) but got Msg`.
-- Hook up HA.value to the model.loginPlayerId and model.loginPassword so that the value properly flows back down from our model to the form element.
-- Implement each new case branch in the update function to set the playerId / password to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
+- Don't forget to initialise these to empty string in the `init` function.
+- Add a `SetLoginPlayerId` and `SetLoginPassword` to the Msg sum type so that we can handle this changes to our `update` function. These constructors should take a string to pass along the new value from the event.
+- Hook up `HE.onInput` on each form element to the new `Msg` constructors (i.e `SetLoginPlayerId` and `SetLoginPassword`). If you forgot the `String` in the constructors you'll get an error like `Expected (String -> Msg) but got Msg`.
+- Hook up `HA.value` to the `model.loginPlayerId` and `model.loginPassword` so that the value properly flows back down from our model to the form element.
+- Implement each new case branch in the `update` function to set the `playerId` / `password` to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
 
 [NOTE]
 ====
-At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your Msg type and the model gets updated in the update function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
+At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your `Msg` type and the model gets updated in the `update` function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
 ====
 
 ### Exercise 1.3: Sending the backend call off
@@ -266,18 +266,18 @@ Lets hook into Form `HE.onSubmit` to make the backend call when the user presses
 
 - Add a `LoginSubmit` to the `Msg` type.
 - Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
-- On the update function, add the `LoginSubmit` handler which fires off to the backend..
+- On the `update` function, add the `LoginSubmit` handler which fires off to the backend..
 - Replace the command in the initialiser with `Cmd.none`
 - Put the call to `BE.postApiLogin` into the cmd of the `LoginSubmit` handler.
 - Add a `token : Maybe String` field to the model to store our auth token (if we have one).
 - Update the `token` field when we get a response to our login (`HandleLoginResp` branches in our `update` function).
-- Write some new view that displays the backendError if the Maybe has a value (Pattern matching is fine or you can use `Utils.maybe`).
+- Write some new view that displays the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe`).
 
 This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg `HandleLoginResp`.
 
 It's worth calling out that we're not doing anything with our token yet. That comes later. For now, we're only interested in keeping track of what comes back.
 
-playerId / password that are already in the database ready for testing are user1 .. user5 with the password "pass".
+`playerId` / `password` that are already in the database ready for testing are user1 .. user5 with the password "pass".
 
 ## Exercise 2: Register Form
 
@@ -327,7 +327,7 @@ Once we have that function written we can then change our update submit handler 
                     )
 ```
 
-Finish make sure the new view is all wired up and does what you'd expect. At this point you should be pretty comfortable creating new UI / model / msgs from scratch.
+Finish making sure the new view is all wired up and does what you'd expect. At this point you should be pretty comfortable creating new UI / model / msgs from scratch.
 
 ## Exercise 3: Remote Data Pattern
 
