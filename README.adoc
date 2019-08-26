@@ -279,7 +279,7 @@ playerId / password that are already in the database ready for testing are user1
 
 Lets do the same form, but for a register page that takes the password twice and makes sure that they are equal. 
 
-We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level). Add new model fields and message constructors for `registerPlayerId`, `registerPassword`, `registerPasswordAgain`, `SetRegisterPlayerId`, `SetRegisterPassword`, `SetRegisterPasswordAgain`.
+We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level). Add new model fields and message constructors for `registerPlayerId`, `registerPassword`, `registerPasswordAgain`, `registerValidationIssues`, `SetRegisterPlayerId`, `SetRegisterPassword`, `SetRegisterPasswordAgain`.
 
 Our backend call for registering a new user is:
 
@@ -310,14 +310,13 @@ Once we have that function written we can then change our update submit handler 
         Submit ->
             case validateDbPlayer model of
                 Ok dbPlayer ->
-                    ( { model | registerValidationIssues = [], token = Nothing }
+                    ( { model | registerValidationIssues = [] }
                     , BE.postApiPlayers dbPlayer HandleRegisterResponse
                     )
 
                 Err problems ->
                     ( { model
                         | registerValidationIssues = problems
-                        , token = Nothing
                       }
                     , Cmd.none
                     )
