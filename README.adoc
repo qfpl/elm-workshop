@@ -358,20 +358,23 @@ So now we can say in our model:
 ```
 
 Which means that our login token is of four possible shapes:
-- NotAsked (We haven't done the backend call for it yet)
-- Loading (The backend call is in progress and we could show a spinner, disable a form, etc.)
-- Success String (The Token is loaded and ready to go)
-- Failure String (The token failed to load and we have an error message)
+- `NotAsked` (We haven't done the backend call for it yet)
+- `Loading` (The backend call is in progress and we could show a spinner, disable a form, etc.)
+- `Success String` (The token is loaded and ready to go)
+- `Failure String` (The token failed to load and we have an error message)
 
 This is the same as our two eithers, but we now also get feedback when the backend call is in progress, which is very handy!
 
-Change loginToken and registerToken to be `RemoteData String String` and make the necessary changes as per your compilation errors. There is `RemoteData.mapError` and `Utils.httpErrorToStr that you'll need to make these changes. Be sure to set it to loading just as the backend calls are sent off.
+[IMPORTANT]
+===========
+Change `loginToken` and `registerToken` to be `RemoteData String String` and make the necessary changes as per your compilation errors. There is `RemoteData.mapError` and `Utils.httpErrorToStr that you'll need to make these changes. Be sure to set it to loading just as the backend calls are sent off.
 
-Change the view to pattern match on the remotedata constructors to print out NotAsked/Loading/Success/Failure output.
+Change the `view` to pattern match on the `RemoteData` constructors to print out `NotAsked`/`Loading`/`Success`/`Failure` output.
+===========
 
-As always, you can check in with prerefactor/Main.elm or ask Ben if you need hints.
+As always, you can check in with `prerefactor/Main.elm` or ask for help if you need hints.
 
-At this point you should be comfy with how we can track our remote data and how to convert from Http results to the remoteData shape.
+At this point you should be comfy with how we can track our remote data and how to convert from `Http` results to the `RemoteData` shape.
 
 ## Exercise 4: Lobby Chat Box
 
