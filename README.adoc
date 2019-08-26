@@ -262,7 +262,7 @@ At this point you should be feeling fairly comfortable with making a basic form 
 
 ### Exercise 1.3: Sending the backend call off
 
-Lets hook into Form `HE.onSubmit` to make the backend call when the user presses enter or clicks login.
+Lets hook into the form's `HE.onSubmit` to make the backend call when the user presses enter or clicks login.
 
 - Add a `LoginSubmit` to the `Msg` type.
 - Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
