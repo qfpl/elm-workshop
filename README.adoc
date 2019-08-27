@@ -385,11 +385,11 @@ To submit a chat entry, we're going to need a user token, so we'll have to put t
 
 The string that the login / register backend calls return is actually a base64 encoded JWT. We're going to need to store that in a central place alongside the actual player id so that we can display that to the user. 
 
-The Session.Player type is meant for this. It also has a json decoder / encoder pair so that we can store the session into local storage if we want to persist the login across page reloads.
+The `Session.Player` type is meant for this. It also has a json decoder / encoder pair so that we can store the session into local storage if we want to persist the login across page reloads.
 
-In the model, lets make a player : Maybe Session.Player key. It's pretty dodgy, but in our Handle{Login/Register}Resp we can just cram in the token from there over whatever maybe we already have. RemoteData.toMaybe is your friend here!
+In the `Model`, lets add a `player : Maybe Session.Player` field. It's pretty dodgy, but in our `Handle{Login/Register}Resp` updates we can just cram in the token we receive on success into `player`. `RemoteData.toMaybe` is your friend here!
 
-Rename the current view function to loggedOutView and start with this new view code:
+Rename the current view function to `loggedOutView` and start with this new view code:
 
 ```elm
 view : Model -> H.Html Msg
@@ -436,7 +436,7 @@ loggedOutView : Model -> H.Html Msg
 loggedOutView model = ...
 ```
 
-Once you get the handle responses setting the player, then you should see the page switch over once login has happened. Now we can build our chat ui! :)
+Once the `player` has been set successfully you should see the page switch over once login has happened. Now we can build our chat ui! :)
 
 ### Hooking up the form
 
