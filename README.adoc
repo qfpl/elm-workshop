@@ -233,9 +233,9 @@ Be sure at this point that you grok what all that Html stuff actually is. You'll
 
 * That we're importing thing from [elm/html](https://package.elm-lang.org/packages/elm/html/1.0.0/) in a qualified manner: 
 ** https://package.elm-lang.org/packages/elm/html/1.0.0/Html[Html as H] (how we can go `H.div` to make a div element).
-** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes[Html.Attributes as HA] (e.g HA.placeholder).
-** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events[Html.Events as HE] (e.g HE.onClick: this will come next).
-* That every element (e.g `H.form`) has a list of attributes (that can be attributes like placeholder or events like onClick that we'll see shortly) and then a list of child elements.
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes[Html.Attributes as HA] (e.g `HA.placeholder`).
+** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events[Html.Events as HE] (e.g `HE.onClick`: this will come next).
+* That every element (e.g `H.form`) has a list of attributes (that can be attributes like `placeholder` or events like `onClick` that we'll see shortly) and then a list of child elements.
 * We put text nodes into the dom with `H.text`.
 ====
 
@@ -249,37 +249,55 @@ There is no state that we can query of a form element in Elm. All we can do is l
 ====
 
 - Add a `loginPlayerId : String` and `loginPassword : String` to the model record so that we can store the player id and the password from the form somewhere. 
-- Don't forget to initialise these to empty string in the init function.
-- Add a SetLoginPlayerId and SetLoginPassword to the Msg sum type so that we can handle this changes to our update function. These constructors should take a string to pass along the new value from the event.
-- Hook up HE.onInput on each form element to the new `Msg` constructors (i.e `SetLoginPlayerId` and `SetLoginPassword`). If you forgot the String in the constructors you'll get an error like `Expected (String -> Msg) but got Msg`.
-- Hook up HA.value to the model.loginPlayerId and model.loginPassword so that the value properly flows back down from our model to the form element.
-- Implement each new case branch in the update function to set the playerId / password to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
+- Don't forget to initialise these to empty string in the `init` function.
+- Add a `SetLoginPlayerId` and `SetLoginPassword` to the Msg sum type so that we can handle this changes to our `update` function. These constructors should take a string to pass along the new value from the event.
+- Hook up `HE.onInput` on each form element to the new `Msg` constructors (i.e `SetLoginPlayerId` and `SetLoginPassword`). If you forgot the `String` in the constructors you'll get an error like `Expected (String -> Msg) but got Msg`.
+- Hook up `HA.value` to the `model.loginPlayerId` and `model.loginPassword` so that the value properly flows back down from our model to the form element.
+- Implement each new case branch in the `update` function to set the `playerId` / `password` to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
 
 [NOTE]
 ====
-At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your Msg type and the model gets updated in the update function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
+At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your `Msg` type and the model gets updated in the `update` function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
 ====
 
 ### Exercise 1.3: Sending the backend call off
 
-Lets hook into Form HE.onSubmit to make the backend call when the user presses enter or clicks login.
+Lets hook into the form's `HE.onSubmit` to make the backend call when the user presses enter or clicks login.
 
-- Add a LoginSubmit to the Msg.
-- Hook HE.onSubmit on the form element to the LoginSubmit Msg.
-- On the update function, add the Submit handler which fires off to the backend..  
-- Replace the command in the initialiser with Cmd.none
-- Put the call to BE.postApiLogin into the cmd of the LoginSubmit handler.
-- Write some new view that displays the loginError if the Maybe has a value (Pattern matching is fine or you can use Utils.maybe).
+- Add a `LoginSubmit` to the `Msg` type.
+- Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
+- On the `update` function, add the `LoginSubmit` handler which fires off to the backend..
+- Replace the command in the initialiser with `Cmd.none`
+- Put the call to `BE.postApiLogin` into the cmd of the `LoginSubmit` handler.
+- Add a `token : Maybe String` field to the model to store our auth token (if we have one).
+- Update the `token` field when we get a response to our login (`HandleLoginResp` branches in our `update` function).
+- Update the `view` function to display the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe`).
 
-This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg HandleLoginResp.
+This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg `HandleLoginResp`.
 
-playerId / password that are already in the database ready for testing are user1 .. user5 with the password "pass".
+It's worth calling out that we're not doing anything with our token yet. That comes later. For now, we're only interested in keeping track of what comes back.
+
+`playerId` / `password` that are already in the database ready for testing are user1 .. user5 with the password "pass".
 
 ## Exercise 2: Register Form
 
 Lets do the same form, but for a register page that takes the password twice and makes sure that they are equal. 
 
-We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level). Add new model fields and message constructors for registerPlayerId, registerPassword, registerPasswordAgain, SetRegisterPlayerId, SetRegisterPassword, SetRegisterPasswordAgain.
+We'll just put the register underneath the login for now all on the one page (you'll have to wrap things in another div at the top level).
+
+Add new model fields and message constructors for:
+
+- `registerPlayerId`
+- `registerPassword`
+- `registerPasswordAgain`
+- `registerValidationIssues`
+- `registerToken`
+- `registerError`
+- `SetRegisterPlayerId`
+- `SetRegisterPassword`
+- `SetRegisterPasswordAgain`.
+
+We should also rename `backendError` to `loginError` and `token` to `loginToken` to make things clear and consistent.
 
 Our backend call for registering a new user is:
 
@@ -296,12 +314,12 @@ On our submit handler, we want to check whether the passwords match and only cal
 
 A good place to start is to write a function with this signature:
 
-```
+```elm
 validateDbPlayer : Model -> Result.Result (List String) BE.DbPlayer
 validateDbPlayer model =
 ```
 
-So it takes the model and returns either a list of errors or a valid DbPlayer ready to submit to the backend. Try writing this with a simple if statement and checking whether `model.registerPassword == model.registerPasswordAgain`.
+So it takes the model and returns either a list of errors or a valid `DbPlayer` ready to submit to the backend. Try writing this with a simple if statement and checking whether `model.registerPassword == model.registerPasswordAgain`.
 
 
 Once we have that function written we can then change our update submit handler to look like:
@@ -310,25 +328,24 @@ Once we have that function written we can then change our update submit handler 
         Submit ->
             case validateDbPlayer model of
                 Ok dbPlayer ->
-                    ( { model | registerValidationIssues = [], token = Nothing }
-                    , BE.postApiPlayers dbPlayer HandleRegisterResponse
+                    ( { model | registerValidationIssues = [], registerToken = Nothing }
+                    , BE.postApiPlayers dbPlayer HandleRegisterResp
                     )
 
                 Err problems ->
                     ( { model
                         | registerValidationIssues = problems
-                        , token = Nothing
+                        , registerToken = Nothing
                       }
                     , Cmd.none
                     )
-
 ```
 
-Finish make sure the new view is all wired up and does what you'd expect. At this point you should be pretty comfortable creating new UI / model / msgs from scratch.
+Finish making sure the new view is all wired up and does what you'd expect. At this point you should be pretty comfortable creating new UI / model / msgs from scratch.
 
 ## Exercise 3: Remote Data Pattern
 
-There's a pattern emerging here for a piece of data that isn't loaded initially and can fail error fetching it. There's a lovely abstraction for this called the RemoteData pattern. 
+There's a pattern emerging here for a piece of data that isn't loaded initially and can fail when fetching it. There's a lovely abstraction for this called the `RemoteData` pattern. 
 
 https://package.elm-lang.org/packages/krisajenkins/remotedata/latest/RemoteData
 
@@ -342,20 +359,21 @@ So now we can say in our model:
 ```
 
 Which means that our login token is of four possible shapes:
-- NotAsked (We haven't done the backend call for it yet)
-- Loading (The backend call is in progress and we could show a spinner, disable a form, etc.)
-- Success String (The Token is loaded and ready to go)
-- Failure String (The token failed to load and we have an error message)
+
+- `NotAsked` (We haven't done the backend call for it yet)
+- `Loading` (The backend call is in progress and we could show a spinner, disable a form, etc.)
+- `Success String` (The token is loaded and ready to go)
+- `Failure String` (The token failed to load and we have an error message)
 
 This is the same as our two eithers, but we now also get feedback when the backend call is in progress, which is very handy!
 
-Change loginToken and registerToken to be `RemoteData String String` and make the necessary changes as per your compilation errors. There is `RemoteData.mapError` and `Utils.httpErrorToStr that you'll need to make these changes. Be sure to set it to loading just as the backend calls are sent off.
+Change `loginToken` and `registerToken` to be `RemoteData String String` and make the necessary changes as per your compilation errors. There are `RemoteData.mapError`, `Utils.remoteDataError`, and `Utils.httpErrorToStr` that might help you make these changes. Be sure to set it to `Loading` just as the backend calls are sent off.
 
-Change the view to pattern match on the remotedata constructors to print out NotAsked/Loading/Success/Failure output.
+Change the `view` to pattern match on the `RemoteData` constructors to print out `NotAsked`/`Loading`/`Success`/`Failure` output.
 
-As always, you can check in with prerefactor/Main.elm or ask Ben if you need hints.
+As always, you can check in with `prerefactor/Main.elm` or ask for help if you need hints.
 
-At this point you should be comfy with how we can track our remote data and how to convert from Http results to the remoteData shape.
+At this point you should be comfy with how we can track our remote data and how to convert from `Http` results to the `RemoteData` shape.
 
 ## Exercise 4: Lobby Chat Box
 
@@ -367,11 +385,11 @@ To submit a chat entry, we're going to need a user token, so we'll have to put t
 
 The string that the login / register backend calls return is actually a base64 encoded JWT. We're going to need to store that in a central place alongside the actual player id so that we can display that to the user. 
 
-The Session.Player type is meant for this. It also has a json decoder / encoder pair so that we can store the session into local storage if we want to persist the login across page reloads.
+The `Session.Player` type is meant for this. It also has a json decoder / encoder pair so that we can store the session into local storage if we want to persist the login across page reloads.
 
-In the model, lets make a player : Maybe Session.Player key. It's pretty dodgy, but in our Handle{Login/Register}Resp we can just cram in the token from there over whatever maybe we already have. RemoteData.toMaybe is your friend here!
+In the `Model`, lets add a `player : Maybe Session.Player` field. It's pretty dodgy, but in our `Handle{Login/Register}Resp` updates we can just cram in the token we receive on success into `player`. `RemoteData.toMaybe` is your friend here!
 
-Rename the current view function to loggedOutView and start with this new view code:
+Rename the current view function to `loggedOutView` and start with this new view code:
 
 ```elm
 view : Model -> H.Html Msg
@@ -418,7 +436,7 @@ loggedOutView : Model -> H.Html Msg
 loggedOutView model = ...
 ```
 
-Once you get the handle responses setting the player, then you should see the page switch over once login has happened. Now we can build our chat ui! :)
+Once the `player` has been set successfully you should see the page switch over once login has happened. Now we can build our chat ui! :)
 
 ### Hooking up the form
 
