@@ -31,7 +31,7 @@ You'll need a few things before you can start:
 Don't forget the submodule part if you want the final version of the code! :)
 
 ```
-git clone --recurse-submodules https://github.com/benkolera/elm-workshop.git
+git clone --recurse-submodules https://github.com/qfpl/elm-workshop.git
 ```
 
 ### Install nodejs and npm
@@ -85,7 +85,7 @@ This method is probably preferrable if you like intellij. It gets to the same le
 
 On most systems, you can just follow along with: https://docs.docker.com/install/
 
-On nixos, setting `virtualisation.docker.enable.true` and a nixos-rebuild should do the trick. Alternatively, with nix you could just run the backend in `nix-shell --run "cabal new-run backend"` from `./dissidence/backend` if you are comfortable running haskell code via cabal. 
+On nixos, setting `virtualisation.docker.enable = true` and a nixos-rebuild should do the trick. Alternatively, with nix you could just run the backend in `nix-shell --run "cabal new-run backend"` from `./dissidence/backend` if you are comfortable running haskell code via cabal. 
 
 To test the backend, run `docker run -ti -p8001:8001 benkolera/dissidence-backend:latest` and you should see `Starting server on port 8001`.
 
