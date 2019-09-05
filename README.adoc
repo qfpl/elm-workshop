@@ -191,11 +191,11 @@ PRs welcome to make suggestions on adding/removing/modifying workshop content! :
 
 ## Exercise 1: Login Form
 
-The first thing that we are going to do is make the login form and have that submitting to the backend. 
+The first thing that we are going to do is make the login form and make that submit to the backend. 
 
 [TIP]
 ====
-Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet.
+Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet. You can also peek at the link:./answers/[answers] if you get stuck.
 ====
 
 ### Exercise 1.1: Basic Form
@@ -231,7 +231,7 @@ Your browser should reload as soon as you save this, showing a form that doesn't
 ====
 Be sure at this point that you grok what all that Html stuff actually is. You'll want to understand:
 
-* That we're importing thing from [elm/html](https://package.elm-lang.org/packages/elm/html/1.0.0/) in a qualified manner: 
+* That we're importing thing from https://package.elm-lang.org/packages/elm/html/1.0.0/[elm/html] in a qualified manner: 
 ** https://package.elm-lang.org/packages/elm/html/1.0.0/Html[Html as H] (how we can go `H.div` to make a div element).
 ** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Attributes[Html.Attributes as HA] (e.g `HA.placeholder`).
 ** https://package.elm-lang.org/packages/elm/html/1.0.0/Html-Events[Html.Events as HE] (e.g `HE.onClick`: this will come next).
