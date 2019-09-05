@@ -120,7 +120,7 @@ You're all set to go at this point!
 ** link:src/Main.elm[./src/Main.elm]  : The main elm entrypoint. This is what you'll be editing for the first exercise!
 ** link:src/fonts[src/fonts/]  : Some gratuitous fonts for the app
 * link:dissidence[dissidence] : This submodule is my fully finished version of the app. Go hunting in there for hints or just explore and tinker with it it if you prefer that to doing the workshop.
-* link:answers[answers] : These directories contain the code as of that exercise for you to peek at if you are confused about something or need a clue.
+* link:./src/Answers[Answers] : These directories contain the code as of that exercise for you to peek at if you are confused about something or need a clue.
 
 ### Stuff that we'll use later
 
@@ -195,7 +195,7 @@ The first thing that we are going to do is make the login form and make that sub
 
 [TIP]
 ====
-Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet. You can also peek at the link:./answers/[answers] if you get stuck.
+Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet. You can also peek at the link:./src/Answers/[Answers] if you get stuck.
 ====
 
 ### Exercise 1.1: Basic Form
