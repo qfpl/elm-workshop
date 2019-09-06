@@ -159,7 +159,7 @@ The page should live reload as you make changes and you should even see compile 
 
 We're going to do things in a simple single-file fashion first then refactor later once the basics are down. It's going to feel like we are in a bad place just before the refactor, but I specifically want to start things off simple then motivate the more complicated Page Components later. 
 
-Follow the types. Have a look at what type the backend call needs and then figure out the UI bits that you need to get that together. Because the code in api/Generated/Api.elm is auto generated, it's sadly lacking in documentation. Check out the [Backend API](#backend-api) for API details as you need them.
+Follow the types. Have a look at what type the backend call needs and then figure out the UI bits that you need to get that together. Because the code in api/Generated/Api.elm is auto generated, it's sadly lacking in documentation. Check out the <<Backend API>> for API details as you need them.
 
 When you need to debug something, using `Debug.log "label for log" value` will console.log that value to the console when the code is run. Handy if something is doing something unexpected. You can use that anywhere.
 
@@ -195,7 +195,8 @@ The first thing that we are going to do is make the login form and make that sub
 
 [TIP]
 ====
-Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet. You can also peek at the link:./src/Answers/[Answers] if you get stuck.
+* Remember that you can reread https://guide.elm-lang.org/architecture/forms.html if this doesn't make sense yet. 
+* You can also peek at the link:./src/Answers/[Answers] if you get stuck.
 ====
 
 ### Exercise 1.1: Basic Form
@@ -245,7 +246,8 @@ Lets wire the form up to some model state and get a feel for how events flow fro
 
 [TIP]
 ====
-There is no state that we can query of a form element in Elm. All we can do is listen to an event when the user changes the value and then store that new value in our model. We do this through having constructors in our message to handle certain form fields.
+* There is no state that we can query of a form element in Elm. All we can do is listen to an event when the user changes the value and then store that new value in our model. We do this through having constructors in our message to handle certain form fields.
+* It's worth saving your file after each dot point to see what error messages that you get when you forget something. :)
 ====
 
 - Add a `loginPlayerId : String` and `loginPassword : String` to the model record so that we can store the player id and the password from the form somewhere. 
@@ -254,24 +256,42 @@ There is no state that we can query of a form element in Elm. All we can do is l
 - Hook up `HE.onInput` on each form element to the new `Msg` constructors (i.e `SetLoginPlayerId` and `SetLoginPassword`). If you forgot the `String` in the constructors you'll get an error like `Expected (String -> Msg) but got Msg`.
 - Hook up `HA.value` to the `model.loginPlayerId` and `model.loginPassword` so that the value properly flows back down from our model to the form element.
 - Implement each new case branch in the `update` function to set the `playerId` / `password` to the right spot in the model. If you forget to do this, you'll get a nice compilation error.
+- Your page should be compiling now. Open up the elm debugger by clicking "Explore History" on the lower right. If you type into the two inputs, you should see your events and new state in action!
 
 [NOTE]
 ====
-At this point you should be feeling fairly comfortable with making a basic form and saving the state of that input into the model. Getting the shape of how your dom events flow in via your `Msg` type and the model gets updated in the `update` function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
+At this point you should be feeling fairly comfortable with:
+
+* Making a basic form and saving the state of that input into the model. 
+* Getting the shape of how your dom events flow in via your `Msg` type and the model gets updated in the `update` function. This is the core of "The Elm Architecture" so it's important to be pretty clear on this.
+
+If you press enter or hit the button it just reloads the page for now. We'll fix this in the next step.
 ====
 
 ### Exercise 1.3: Sending the backend call off
 
+[TIP]
+====
+* We are now interacting with the backend api code generated from the haskell backend. You can see docs for these calls at <<Backend API>>.
+* This is our first interaction with the https://guide.elm-lang.org/error_handling/result.html[Result], which is a way to handle errors in elm without exceptions. If you are unfamiliar with `Result` or (in haskell) `Either` then it is a good idea to read that part of the elm guide. 
+====
+
 Lets hook into the form's `HE.onSubmit` to make the backend call when the user presses enter or clicks login.
 
-- Add a `LoginSubmit` to the `Msg` type.
-- Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
-- On the `update` function, add the `LoginSubmit` handler which fires off to the backend..
-- Replace the command in the initialiser with `Cmd.none`
-- Put the call to `BE.postApiLogin` into the cmd of the `LoginSubmit` handler.
-- Add a `token : Maybe String` field to the model to store our auth token (if we have one).
+* There is a dummy call doing a `BE.postApilogin` when the page initialises in `init`. Lets remove it by changing the initialiser command to `Cmd.none`. Take note of the shape of this call though because we will use it shortly!
+* Add a `LoginSubmit` to the `Msg` type. This constructor will take no arguments.
+* Lets setup the work that we plan to do when the form is submitted:
+** On the `update` function, add the `LoginSubmit` handler which fires off to the backend by calling `BE.postApiLogin` with the username and password from our model.
+** Note the type of this backend call: `postApiPlayers : DbPlayer -> (Result Http.Error String -> msg) -> Cmd msg`
+*** Takes a `dbPlayer` (a record alias with `dbUsername` and `dbPassword` fields)
+*** Takes a "callback" function that takes the Http Response and turns it into a `Msg`.
+*** Returns a cmd that can fit into the second spot in the tuple returned by update.
+** If we aren't updating the model, you can't do a record update that updates nothing, so write it as ```(model, <call to postApiLogin goes here>)```. 
+* Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
+* If you try to login with the browser network tab open, you should see the call happen when pressing enter or the button. But there is zero feedback or much done with the response at this point. You should also see the response event in the elm debugger.
+- Add a `token : Maybe String` field to the model to store our auth token that is returned by the login.
 - Update the `token` field when we get a response to our login (`HandleLoginResp` branches in our `update` function).
-- Update the `view` function to display the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe`).
+- Update the `view` function to display the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe` and show a login OK/Failed).
 
 This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg `HandleLoginResp`.
 
@@ -507,7 +527,9 @@ Ideally at this point you can submit a chat line and have it pop up up to 2 seco
 
 ### Backend API
 
-This section is to help you figure out the shape of the backend calls. It's manually created, so there is a chance that it may get out of date with the actual API and types. Always trust the types over the documentation if there is a disagreement.
+This section is to help you figure out the shape of the backend calls that can be found in link:./api/Generated/Api.elm[Generated.Api]. It is designed to be read alongside the elm code to give additional context that the autogenerated code is lacking. While the elm code is automatically generated, this documentation here is manually created and probably wrong. Always trust the elm types over the documentation if there is a disagreement.
+
+The haskell code that describes the api can be found link:./dissidence/backend/src/Game/Dissidence.hs[here]. This api is written with servant, which if you are interested about you can read about at their website: https://www.servant.dev/. You do not need to understand this haskell code to complete this workshop, so don't worry if you find it confusing or don't care. That's perfectly OK. :)
 
 #### Unauthenticated Calls
 
