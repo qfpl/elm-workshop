@@ -31,8 +31,8 @@ type Msg
 
 
 type alias Model =
-    { backendOK : Bool
-    , backendError : Maybe String
+    { token : Maybe String
+    , loginErrorMessage : Maybe String
     , loginUsername : String
     , loginPassword : String
     }
@@ -40,8 +40,8 @@ type alias Model =
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
-    ( { backendOK = True
-      , backendError = Nothing
+    ( { token = Nothing
+      , loginErrorMessage = Nothing
       , loginUsername = ""
       , loginPassword = ""
       }
@@ -52,11 +52,11 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
-        HandleLoginResp (Ok r) ->
-            ( { model | backendOK = True, backendError = Nothing }, Cmd.none )
+        HandleLoginResp (Ok token) ->
+            ( { model | token = Just token }, Cmd.none )
 
         HandleLoginResp (Err err) ->
-            ( { model | backendError = Just "Backend login failed", backendOK = False }, Cmd.none )
+            ( { model | loginErrorMessage = Just "Backend login failed" }, Cmd.none )
 
         SetLoginUsername s ->
             ( { model | loginUsername = s }, Cmd.none )
@@ -64,7 +64,10 @@ update action model =
         SetLoginPassword s ->
             ( { model | loginPassword = s }, Cmd.none )
 
-        LoginSubmit -> ( model, Cmd.none )
+        LoginSubmit ->
+            ( { model | token = Nothing, loginErrorMessage = Nothing }
+            , BE.postApiLogin (BE.DbPlayer model.loginUsername model.loginPassword) HandleLoginResp
+            )
 
 
 subscriptions : Model -> Sub Msg
@@ -93,5 +96,17 @@ view model =
             , H.button
                 [ HA.class "btn primary" ]
                 [ H.text "Login" ]
+            , case model.token of
+                Nothing ->
+                    H.text ""
+
+                Just t ->
+                    H.pre [] [ H.text t ]
+            , case model.loginErrorMessage of
+                Nothing ->
+                    H.text ""
+
+                Just err ->
+                    H.p [ HA.class "err" ] [ H.text err ]
             ]
         ]

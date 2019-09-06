@@ -289,15 +289,23 @@ Lets hook into the form's `HE.onSubmit` to make the backend call when the user p
 ** If we aren't updating the model, you can't do a record update that updates nothing, so write it as ```(model, <call to postApiLogin goes here>)```. 
 * Hook `HE.onSubmit` on the form element to the `LoginSubmit` Msg.
 * If you try to login with the browser network tab open, you should see the call happen when pressing enter or the button. But there is zero feedback or much done with the response at this point. You should also see the response event in the elm debugger.
-- Add a `token : Maybe String` field to the model to store our auth token that is returned by the login.
-- Update the `token` field when we get a response to our login (`HandleLoginResp` branches in our `update` function).
-- Update the `view` function to display the `backendError` if the `Maybe` has a value (Pattern matching is fine or you can use `Utils.maybe` and show a login OK/Failed).
+* Lets add some feedback in the simplest way that we know how:
+** Remove `backendError` and `backendOk`
+** Add some things to the model: `token : Maybe String`, `loginErrorMessage: Maybe String`. Initialise them all to nothing.
+** On the `HandleLoginResp` handler, set the `token`, `loginErrorMessage` as appropriate.
+** Display the token, and error message in the view via pattern matching the maybe. There's a handy class called `err` if you want to make the error look pretty and error-y. :)
+** You probably will want to update the `LoginSubmit` handler to clear out the token and error message to `Nothing` when a new call to the backend is fired off.
 
-This wont do much, but it will print an error if the user doesn't authenticate and do nothing if it is good. That's OK for now. At this point you should now see how we can fire off effects in our update and how the return from our backend call comes in a later msg `HandleLoginResp`.
-
-It's worth calling out that we're not doing anything with our token yet. That comes later. For now, we're only interested in keeping track of what comes back.
+This wont do much, but it will print an error if the user doesn't authenticate and show a obtuse string of characters if it worked. That's OK for now. We'll do a lot more with the token, going to other pages and cleaning up our handling of the response later. For now it feels a bit unfinished but just bear with us till the register page is done.
 
 `playerId` / `password` that are already in the database ready for testing are user1 .. user5 with the password "pass".
+
+[TIP]
+====
+At this point you should now see:
+* how we can fire off effects in our update and how the return from our backend call comes in a later msg like `HandleLoginResp`.
+* Have an appreciation for `Result` and `Maybe` if you hadn't used them before. 
+====
 
 ## Exercise 2: Register Form
 
