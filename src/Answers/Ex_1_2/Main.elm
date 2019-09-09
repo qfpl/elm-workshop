@@ -25,14 +25,14 @@ main =
 
 type Msg
     = HandleLoginResp (Result Http.Error String)
-    | SetLoginUsername String
+    | SetLoginPlayerId String
     | SetLoginPassword String
 
 
 type alias Model =
     { backendOK : Bool
     , backendError : Maybe String
-    , loginUsername : String
+    , loginPlayerId : String
     , loginPassword : String
     }
 
@@ -41,7 +41,7 @@ init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { backendOK = True
       , backendError = Nothing
-      , loginUsername = ""
+      , loginPlayerId = ""
       , loginPassword = ""
       }
     , BE.postApiLogin (BE.DbPlayer "user1" "pass") HandleLoginResp
@@ -57,8 +57,8 @@ update action model =
         HandleLoginResp (Err err) ->
             ( { model | backendError = Just "Backend login failed", backendOK = False }, Cmd.none )
 
-        SetLoginUsername s ->
-            ( { model | loginUsername = s }, Cmd.none )
+        SetLoginPlayerId s ->
+            ( { model | loginPlayerId = s }, Cmd.none )
 
         SetLoginPassword s ->
             ( { model | loginPassword = s }, Cmd.none )
@@ -77,7 +77,7 @@ view model =
             [ H.input
                 [ HA.placeholder "Player Id"
                 , HAA.ariaLabel "Player ID"
-                , HE.onInput SetLoginUsername
+                , HE.onInput SetLoginPlayerId
                 ]
                 []
             , H.input

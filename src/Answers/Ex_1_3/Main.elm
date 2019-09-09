@@ -25,7 +25,7 @@ main =
 
 type Msg
     = HandleLoginResp (Result Http.Error String)
-    | SetLoginUsername String
+    | SetLoginPlayerId String
     | SetLoginPassword String
     | LoginSubmit
 
@@ -33,7 +33,7 @@ type Msg
 type alias Model =
     { token : Maybe String
     , loginErrorMessage : Maybe String
-    , loginUsername : String
+    , loginPlayerId : String
     , loginPassword : String
     }
 
@@ -42,7 +42,7 @@ init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { token = Nothing
       , loginErrorMessage = Nothing
-      , loginUsername = ""
+      , loginPlayerId = ""
       , loginPassword = ""
       }
     , Cmd.none
@@ -58,15 +58,15 @@ update action model =
         HandleLoginResp (Err err) ->
             ( { model | loginErrorMessage = Just "Backend login failed" }, Cmd.none )
 
-        SetLoginUsername s ->
-            ( { model | loginUsername = s }, Cmd.none )
+        SetLoginPlayerId s ->
+            ( { model | loginPlayerId = s }, Cmd.none )
 
         SetLoginPassword s ->
             ( { model | loginPassword = s }, Cmd.none )
 
         LoginSubmit ->
             ( { model | token = Nothing, loginErrorMessage = Nothing }
-            , BE.postApiLogin (BE.DbPlayer model.loginUsername model.loginPassword) HandleLoginResp
+            , BE.postApiLogin (BE.DbPlayer model.loginPlayerId model.loginPassword) HandleLoginResp
             )
 
 
@@ -83,7 +83,8 @@ view model =
             [ H.input
                 [ HA.placeholder "Player Id"
                 , HAA.ariaLabel "Player ID"
-                , HE.onInput SetLoginUsername
+                , HE.onInput SetLoginPlayerId
+                , HA.value model.loginPlayerId
                 ]
                 []
             , H.input
@@ -91,6 +92,7 @@ view model =
                 , HA.type_ "password"
                 , HAA.ariaLabel "Password"
                 , HE.onInput SetLoginPassword
+                , HA.value model.loginPassword
                 ]
                 []
             , H.button
