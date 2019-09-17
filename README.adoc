@@ -87,7 +87,7 @@ On most systems, you can just follow along with: https://docs.docker.com/install
 
 On nixos, setting `virtualisation.docker.enable = true` and a nixos-rebuild should do the trick. Alternatively, with nix you could just run the backend in `nix-shell --run "cabal new-run backend"` from `./dissidence/backend` if you are comfortable running haskell code via cabal. 
 
-To test the backend, run `docker run -ti -p8001:8001 benkolera/dissidence-backend:latest` and you should see `Starting server on port 8001`.
+To test the backend, run `docker run -ti -p8001:8001 qfpl/dissidence-backend:latest` and you should see `Starting server on port 8001`.
 
 ### Frontends Setup
 
